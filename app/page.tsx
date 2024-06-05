@@ -113,27 +113,27 @@ export default function Home() {
     <div className="container mx-auto max-w-2xl py-5 px-2">
       <div className="flex flex-col">
         <div className="flex justify-between gap-3 py-3">
-        <div className="lg:w-5/6">
+        <div className="w-4/6 lg:w-5/6">
           <input
             type="text"
             placeholder="Type a task..."
-            className="border rounded-lg ps-4 w-full h-full"
+            className="border rounded-lg ps-4 py-3 w-full h-full"
             onChange={handleTaskChange}
             value={userInput}
           />
           </div>
-          <div className="lg:w-1/6">
+          <div className="w-2/6 lg:w-1/6">
             <button 
               onClick={addTask}
-              className="w-full bg-red-500 flex items-center justify-center gap-3 px-4 py-2 text-white text-sm rounded-lg">Add task</button>
+              className="w-full bg-black flex items-center justify-center gap-3 px-4 py-3 text-white rounded-lg">Add task</button>
           </div>
         </div>
       </div>
       <div className="flex justify-between items-center">
-        <div className="lg:w-4/6">
+        <div className="w-3/6 lg:w-4/6">
           <p className="text-sm text-gray-400">{count} tasks found</p>
         </div>
-        <div className="lg:w-2/6">
+        <div className="w-3/6 lg:w-2/6">
           <FilterModule 
             selectedFilterOption={selectedFilterOption}
             filterDropdownVisible={filterDropdownVisible}
