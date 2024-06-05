@@ -1,6 +1,6 @@
 "use client";
 import { FC } from "react";
-import { LiaCheckCircle } from "react-icons/lia";
+import { LiaCheckCircle, LiaTrashAlt } from "react-icons/lia";
 
 
 interface Task {
@@ -12,9 +12,11 @@ interface Task {
 const TaskItem: FC<{
   task: Task,
   completeTask: (id: string) => void;
+  deleteTask: (id: string) => void;
 }> = ({
   task,
-  completeTask
+  completeTask,
+  deleteTask
 }) => {
 
   return (
@@ -39,6 +41,12 @@ const TaskItem: FC<{
       />
     </span>
     <p>{task.text}</p>
+    <span 
+      role="button" 
+      onClick={() => deleteTask(task.id)}
+      className="ms-auto w-6 h-6 bg-red-200 flex items-center justify-center rounded-full">
+      <LiaTrashAlt className="text-red-400" />
+    </span>
   </div>
   );
 };
