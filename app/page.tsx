@@ -18,11 +18,23 @@ interface FilterOption {
 }
 
 
-
 export default function Home() {
 
-  const [tasks, setTasks] = useState<Task[]>([]);
+  let localTasks;
+  if (localStorage.getItem('tasks')) {
+    localTasks = JSON.parse(localStorage.getItem('tasks') as any);
+  } else {
+    localTasks = [];
+  }
+
+  const saveToLocalStorage = (tasks: Task[]) => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+
+
+  const [tasks, setTasks] = useState<Task[]>(localTasks);
   const [userInput, setUserInput] = useState("");
+
 
   const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value);
@@ -39,17 +51,23 @@ export default function Home() {
     setTasks(newTasks);
     setUserInput("");
     console.log(tasks);
+    saveToLocalStorage(newTasks)
   };
 
 
   const completeTask = (id: string) => {
     const updatedTasks = tasks.map((task: Task) => {
       if (task.id === id) {
+        if (task.status === "active") {
         return { ...task, status: "completed" };
+        } else if (task.status === "completed") {
+          return { ...task, status: "active" }
+        }
       }
       return task;
     }) as Task[];
     setTasks(updatedTasks);
+    saveToLocalStorage(updatedTasks);
     console.log("task updated", updatedTasks);
   };
 
@@ -58,6 +76,7 @@ export default function Home() {
       task.id !== id
     ))
     setTasks(updatedTasks)
+    saveToLocalStorage(updatedTasks)
   }
 
   const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
