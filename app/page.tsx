@@ -1,22 +1,13 @@
 "use client";
 import { ChangeEvent, useState } from "react";
-import { BiTask } from "react-icons/bi";
 import { FaFilter } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa6";
 import { v4 as uuidv4 } from "uuid";
 import TaskItem from "./components/task-item";
-
-interface Task {
-  id: string;
-  text: string;
-  status: "active" | "completed";
-}
-
-interface FilterOption {
-  code: string;
-  name: string;
-}
-
+import FilterModule from "./components/filter-module";
+import Task from "@/types/Task";
+import FilterOption from "@/types/FilterOption";
+import { saveToLocalStorage } from "./utils/localStorageUtils";
 
 export default function Home() {
 
@@ -27,11 +18,7 @@ export default function Home() {
     localTasks = [];
   }
 
-  const saveToLocalStorage = (tasks: Task[]) => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }
-
-
+ 
   const [tasks, setTasks] = useState<Task[]>(localTasks);
   const [userInput, setUserInput] = useState("");
 
@@ -103,7 +90,7 @@ export default function Home() {
   });
 
 
-  const handleFilterOption = (index: number) => {
+  const switchFilterOption = (index: number) => {
     const selectedOption = filterOptions[index];
     setSelectedFilterOption(selectedOption);
     setFilterDropdownVisible(false);
@@ -138,7 +125,7 @@ export default function Home() {
           <div className="lg:w-1/6">
             <button 
               onClick={addTask}
-              className="w-full bg-red-500 flex items-center justify-between gap-3 px-4 py-2 text-white text-sm rounded-lg">Add task</button>
+              className="w-full bg-red-500 flex items-center justify-center gap-3 px-4 py-2 text-white text-sm rounded-lg">Add task</button>
           </div>
         </div>
       </div>
@@ -147,52 +134,16 @@ export default function Home() {
           <p className="text-sm text-gray-400">{count} tasks found</p>
         </div>
         <div className="lg:w-2/6">
-        <div className="relative">
-          <ul>
-            <li>
-              <span
-                onClick={() => setFilterDropdownVisible(!filterDropdownVisible)}
-                className="flex items-center justify-start gap-3 px-4 py-2 text-white bg-black text-sm rounded-lg active"
-              >
-                <FaFilter />
-                {filterOptions.map((item, index) => (
-                  <>
-                    {item.code === selectedFilterOption.code && (
-                      <>{item.name}</>
-                    )}
-                  </>
-                ))}
-                <FaChevronDown className="ms-auto" />
-              </span>
-            </li>
-          </ul>
-          <ul
-            className={
-              filterDropdownVisible
-                ? "flex flex-col order-filter-options absolute bg-white w-full"
-                : "flex flex-col order-filter-options absolute bg-white hidden"
-            }
-          >
-            {filterOptions.map((item, index) => (
-              <li className="me-2" key={index}>
-                <button
-                  onClick={() => handleFilterOption(index)}
-                  className="flex px-4 py-2 gap-2 text-gray-500 text-sm font-medium text-sm rounded-lg"
-                >
-                  <span className="w-4 h-4 border border-black flex items-center justify-center rounded-full">
-                    {selectedFilterOption.code === item.code && (
-                      <span className="w-2 h-2 bg-black rounded-full flex"></span>
-                    )}
-                  </span>
-                  {item.name}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <FilterModule 
+            selectedFilterOption={selectedFilterOption}
+            filterDropdownVisible={filterDropdownVisible}
+            setFilterDropdownVisible={setFilterDropdownVisible}
+            filterOptions={filterOptions}
+            switchFilterOption={switchFilterOption}
+          />
         </div>
       </div>
-      <div className="tasks-list flex flex-col gap-2 mt-2">
+      <div className="flex flex-col gap-2 mt-2">
       {filteredTasks.map((task, index) => (
           <TaskItem task={task} completeTask={completeTask} deleteTask={deleteTask} key={index} />
         ))}
